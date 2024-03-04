@@ -1,0 +1,15 @@
+# docker-compose.yml
+version: '3'
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: app
+    restart: unless-stopped
+    tty: true
+    ports:
+      - "8080:80"
+    working_dir: /var/www/html
+    volumes:
+      - ./:/var/www/html
