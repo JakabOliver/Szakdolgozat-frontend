@@ -5,8 +5,17 @@
  * Author: BootstrapMade.com
  * License: https://bootstrapmade.com/license/
  */
-(function() {
+(function () {
     "use strict";
-    alert(1);
-
+    fetch("http://localhost/log/page-visited", {
+        method: "POST",
+        body: JSON.stringify({
+            data:{
+                path: window.location.pathname
+            }
+        }),
+        headers: {
+            "Content-type": "request->all()application/json; charset=UTF-8"
+        }
+    });
 })();
