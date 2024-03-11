@@ -7,6 +7,7 @@
  */
 
 export class Tracker {
+    user_id;
     static  HOST = "http://localhost/";
 
     trackPageLoad() {
@@ -16,12 +17,33 @@ export class Tracker {
         this.track('log/page-visited', data)
     }
 
+    trackEvent(name, attributes = {}) {
+        const data = {
+            name,
+            attributes
+        };
+        this.track('log/event', data)
+    }
+
     track(url, data) {
+        const user_id =this.user_id;
         fetch(Tracker.HOST + url, {
             method: "POST",
-            body: JSON.stringify({data}),
+            body: JSON.stringify({user_id, data}),
             headers: {"Content-type": "application/json; charset=UTF-8"}
         });
+    }
+
+    set user_id(user_id) {
+        this.user_id = user_id;
+        localStorage.setItem('user_id', user_id);
+    }
+
+    get user_id(){
+        if(!this.user_id){
+            this.user_id = localStorage.getItem('user_id');
+        }
+        return this.user_id;
     }
 }
 
