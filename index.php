@@ -11,4 +11,4 @@ if (empty($path)) {
     $path = 'index';
 }
 $template = $twig->load($path . '.twig');
-echo $template->render(['additionalJS' => 'assets/js/tracker.js', 'go' => 'here']);
+echo $template->render(['additionalJS' => 'dist/bundle.js']);

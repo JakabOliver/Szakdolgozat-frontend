@@ -1,3 +1,7 @@
+function uuidv4() {
+    return "123123";
+}
+
 /**
  * Template Name: NiceAdmin
  * Updated: Jan 29 2024 with Bootstrap v5.3.2
@@ -7,17 +11,17 @@
  */
 
 export class Tracker {
-    user_id;
-    static  HOST = "http://localhost/";
+    private user_id: string;
+    static HOST = "http://localhost/";
 
-    trackPageLoad() {
+    public trackPageLoad():void {
         const data = {
             path: window.location.pathname
         };
         this.track('log/page-visited', data)
     }
 
-    trackEvent(name, attributes = {}) {
+    trackEvent(name: string, attributes = {}) {
         const data = {
             name,
             attributes
@@ -25,8 +29,8 @@ export class Tracker {
         this.track('log/event', data)
     }
 
-    track(url, data) {
-        const user_id =this.user_id;
+    private track(url: string, data: object):void {
+        const user_id = this.getUserId();
         fetch(Tracker.HOST + url, {
             method: "POST",
             body: JSON.stringify({user_id, data}),
@@ -34,32 +38,20 @@ export class Tracker {
         });
     }
 
-    set user_id(user_id) {
+    setUserId(user_id: string) {
         this.user_id = user_id;
         localStorage.setItem('user_id', user_id);
+
     }
 
-    get user_id(){
-        if(!this.user_id){
-            this.user_id = localStorage.getItem('user_id');
+    getUserId() {
+        if (!this.user_id) {
+            this.setUserId(localStorage.getItem('user_id'));
+        }
+        if (!this.user_id) {
+            this.setUserId(uuidv4());
         }
         return this.user_id;
+
     }
 }
-
-
-(function () {
-    "use strict";
-    /* fetch("http://localhost/log/page-visited", {
-         method: "POST",
-         body: JSON.stringify({
-             data:{
-                 path: window.location.pathname
-             }
-         }),
-         headers: {
-             "Content-type": "request->all()application/json; charset=UTF-8"
-         }
-     });*/
-})();
-

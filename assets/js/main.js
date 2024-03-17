@@ -5,14 +5,11 @@
  * Author: BootstrapMade.com
  * License: https://bootstrapmade.com/license/
  */
-import {Tracker} from "./tracker.js";
 
 (function () {
     "use strict";
-    const tracker = new Tracker();
-    tracker.user_id = 1;
-    tracker.trackPageLoad();
-    tracker.trackEvent('Teszt esemény', {'alma': 'Körte'});
+    window.pageLoad();
+    window.trackEvent('Teszt esemény', {'alma': 'Körte'});
     /**
      * Easy selector helper function
      */
