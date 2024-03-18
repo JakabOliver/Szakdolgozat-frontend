@@ -4,7 +4,8 @@
   "description": "Thanks for downloading this template!",
   "private": true,
   "scripts": {
-    "build": "webpack"
+    "start": "webpack serve --open --config webpack.dev.js",
+    "build": "webpack --config webpack.prod.js"
   },
   "keywords": [],
   "author": "",
@@ -12,7 +13,9 @@
   "devDependencies": {
     "@types/lodash": "^4.17.0",
     "webpack": "^5.90.3",
-    "webpack-cli": "^5.1.4"
+    "webpack-cli": "^5.1.4",
+    "webpack-dev-server": "^5.0.3",
+    "webpack-merge": "^5.10.0"
   },
   "dependencies": {
     "lodash": "^4.17.21"

@@ -8,7 +8,7 @@
 
 (function () {
     "use strict";
-    window.pageLoad();
+    pageLoad();
     window.trackEvent('Teszt esemény', {'alma': 'Körte'});
     /**
      * Easy selector helper function
