@@ -4,7 +4,7 @@
   "description": "Thanks for downloading this template!",
   "private": true,
   "scripts": {
-    "start": "webpack serve --open --config webpack.dev.js",
+    "start": "webpack --config webpack.dev.js --watch",
     "build": "webpack --config webpack.prod.js"
   },
   "keywords": [],

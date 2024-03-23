@@ -8,8 +8,10 @@
 
 (function () {
     "use strict";
+    setUserId(6);
+    addUserAttribute('Favorite colour', 'Blue');
     pageLoad();
-    window.trackEvent('Teszt esemény', {'alma': 'Körte'});
+    //window.trackEvent('Teszt esemény', {'alma': 'Körte'});
     /**
      * Easy selector helper function
      */
