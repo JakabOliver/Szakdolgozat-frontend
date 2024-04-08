@@ -11,7 +11,12 @@ function uuidv4() {
  */
 
 export class Tracker {
+    set token(value: string) {
+        this._token = value;
+    }
+
     private user_id: string;
+    private _token: string;
     static HOST = "http://localhost/";
 
     public trackPageLoad(): void {
@@ -31,11 +36,13 @@ export class Tracker {
 
     private track(url: string, data: object): void {
         const user_id = this.getUserId();
-        const user_data = JSON.parse(localStorage.getItem('user_data')) ||{};
-        const browser_data=this.getBrowserData();
+        const token = this._token;
+        const user_data = JSON.parse(localStorage.getItem('user_data')) || {};
+        const generic_attributes = JSON.parse(localStorage.getItem('generic_attributes')) || {};
+        const browser_data = this.getBrowserData();
         fetch(Tracker.HOST + url, {
             method: "POST",
-            body: JSON.stringify({user_id, data, user_data, browser_data}),
+            body: JSON.stringify({user_id, data, user_data, browser_data, generic_attributes, token}),
             headers: {"Content-type": "application/json; charset=UTF-8"}
         });
     }
@@ -44,10 +51,20 @@ export class Tracker {
         localStorage.removeItem('user_data');
     }
 
+    resetAttributes() {
+        localStorage.removeItem('generic_attributes');
+    }
+
     addUserAttribute(key: string, value: string) {
-        const userData = JSON.parse(localStorage.getItem('user_data')) ||{};
+        const userData = JSON.parse(localStorage.getItem('user_data')) || {};
         userData[key] = value;
         localStorage.setItem('user_data', JSON.stringify(userData));
+    }
+
+    addAttribute(key: string, value: string) {
+        const attributes = JSON.parse(localStorage.getItem('generic_attributes')) || {};
+        attributes[key] = value;
+        localStorage.setItem('generic_attributes', JSON.stringify(attributes));
     }
 
 
@@ -65,7 +82,10 @@ export class Tracker {
             this.setUserId(uuidv4());
         }
         return this.user_id;
+    }
 
+    authenticate(token: string) {
+        this.token = token;
     }
 
     private getBrowserData() {
@@ -77,66 +97,65 @@ export class Tracker {
         let nameOffset, verOffset, ix;
 
 // In Opera, the true version is after "OPR" or after "Version"
-        if ((verOffset=nAgt.indexOf("OPR"))!=-1) {
+        if ((verOffset = nAgt.indexOf("OPR")) != -1) {
             browserName = "Opera";
-            fullVersion = nAgt.substring(verOffset+4);
-            if ((verOffset=nAgt.indexOf("Version"))!=-1)
-                fullVersion = nAgt.substring(verOffset+8);
+            fullVersion = nAgt.substring(verOffset + 4);
+            if ((verOffset = nAgt.indexOf("Version")) != -1)
+                fullVersion = nAgt.substring(verOffset + 8);
         }
 // In MS Edge, the true version is after "Edg" in userAgent
-        else if ((verOffset=nAgt.indexOf("Edg"))!=-1) {
+        else if ((verOffset = nAgt.indexOf("Edg")) != -1) {
             browserName = "Microsoft Edge";
-            fullVersion = nAgt.substring(verOffset+4);
+            fullVersion = nAgt.substring(verOffset + 4);
         }
 // In MSIE, the true version is after "MSIE" in userAgent
-        else if ((verOffset=nAgt.indexOf("MSIE"))!=-1) {
+        else if ((verOffset = nAgt.indexOf("MSIE")) != -1) {
             browserName = "Microsoft Internet Explorer";
-            fullVersion = nAgt.substring(verOffset+5);
+            fullVersion = nAgt.substring(verOffset + 5);
         }
 // In Chrome, the true version is after "Chrome"
-        else if ((verOffset=nAgt.indexOf("Chrome"))!=-1) {
+        else if ((verOffset = nAgt.indexOf("Chrome")) != -1) {
             browserName = "Chrome";
-            fullVersion = nAgt.substring(verOffset+7);
+            fullVersion = nAgt.substring(verOffset + 7);
         }
 // In Safari, the true version is after "Safari" or after "Version"
-        else if ((verOffset=nAgt.indexOf("Safari"))!=-1) {
+        else if ((verOffset = nAgt.indexOf("Safari")) != -1) {
             browserName = "Safari";
-            fullVersion = nAgt.substring(verOffset+7);
-            if ((verOffset=nAgt.indexOf("Version"))!=-1)
-                fullVersion = nAgt.substring(verOffset+8);
+            fullVersion = nAgt.substring(verOffset + 7);
+            if ((verOffset = nAgt.indexOf("Version")) != -1)
+                fullVersion = nAgt.substring(verOffset + 8);
         }
 // In Firefox, the true version is after "Firefox"
-        else if ((verOffset=nAgt.indexOf("Firefox"))!=-1) {
+        else if ((verOffset = nAgt.indexOf("Firefox")) != -1) {
             browserName = "Firefox";
-            fullVersion = nAgt.substring(verOffset+8);
+            fullVersion = nAgt.substring(verOffset + 8);
         }
 // In most other browsers, "name/version" is at the end of userAgent
-        else if ( (nameOffset=nAgt.lastIndexOf(' ')+1) <
-            (verOffset=nAgt.lastIndexOf('/')) )
-        {
-            browserName = nAgt.substring(nameOffset,verOffset);
-            fullVersion = nAgt.substring(verOffset+1);
-            if (browserName.toLowerCase()==browserName.toUpperCase()) {
+        else if ((nameOffset = nAgt.lastIndexOf(' ') + 1) <
+            (verOffset = nAgt.lastIndexOf('/'))) {
+            browserName = nAgt.substring(nameOffset, verOffset);
+            fullVersion = nAgt.substring(verOffset + 1);
+            if (browserName.toLowerCase() == browserName.toUpperCase()) {
                 browserName = navigator.appName;
             }
         }
 // trim the fullVersion string at semicolon/space if present
-        if ((ix=fullVersion.indexOf(";"))!=-1)
-            fullVersion=fullVersion.substring(0,ix);
-        if ((ix=fullVersion.indexOf(" "))!=-1)
-            fullVersion=fullVersion.substring(0,ix);
+        if ((ix = fullVersion.indexOf(";")) != -1)
+            fullVersion = fullVersion.substring(0, ix);
+        if ((ix = fullVersion.indexOf(" ")) != -1)
+            fullVersion = fullVersion.substring(0, ix);
 
-        majorVersion = parseInt(''+fullVersion,10);
+        majorVersion = parseInt('' + fullVersion, 10);
         if (isNaN(majorVersion)) {
-            fullVersion  = ''+parseFloat(navigator.appVersion);
-            majorVersion = parseInt(navigator.appVersion,10);
+            fullVersion = '' + parseFloat(navigator.appVersion);
+            majorVersion = parseInt(navigator.appVersion, 10);
         }
         return {
-            'name':browserName,
-            'fullversion':fullVersion,
-            'majorversion':majorVersion,
-            'appName':navigator.appName,
-            'userAgent':navigator.userAgent
+            'name': browserName,
+            'fullversion': fullVersion,
+            'majorversion': majorVersion,
+            'appName': navigator.appName,
+            'userAgent': navigator.userAgent
         };
     }
 }

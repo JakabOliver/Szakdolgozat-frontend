@@ -8,10 +8,12 @@
 
 (function () {
     "use strict";
+    authenticate('yKTJkhqZmVZM0nl9NClp8ABm9gJajbA7');
     setUserId(6);
-    addUserAttribute('Favorite colour', 'Blue');
+    addAttribute('Has seen front Page', Date.now());
+    addAttribute('Last page opened', 'Main page');
     pageLoad();
-    //window.trackEvent('Teszt esemény', {'alma': 'Körte'});
+    window.trackEvent('Something interesting happend', {'alma': 'Körte'});
     /**
      * Easy selector helper function
      */

@@ -6,4 +6,6 @@ _global.pageLoad = tracker.trackPageLoad.bind(tracker); // bind `this` context
 _global.trackEvent = tracker.trackEvent.bind(tracker); // bind `this` context
 _global.setUserId = tracker.setUserId.bind(tracker); // bind `this` context
 _global.addUserAttribute = tracker.addUserAttribute.bind(tracker); // bind `this` context
+_global.addAttribute = tracker.addAttribute.bind(tracker); // bind `this` context
+_global.authenticate = tracker.authenticate.bind(tracker); // bind `this` context
 
