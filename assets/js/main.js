@@ -9,11 +9,30 @@
 (function () {
     "use strict";
     authenticate('yKTJkhqZmVZM0nl9NClp8ABm9gJajbA7');
-    setUserId(6);
+    setUserId(505452);
     addAttribute('Has seen front Page', Date.now());
-    addAttribute('Last page opened', 'Main page');
+    addAttribute('Last page opened', document.title);
     pageLoad();
-    window.trackEvent('Something interesting happend', {'alma': 'Körte'});
+
+    document.querySelectorAll('.sales-card li a').forEach(function (element) {
+        element.addEventListener('click', function (e) {
+            trackFilterAppliedOnDashboard('Sales', e.target.innerText);
+        });
+    });
+    document.querySelectorAll('.revenue-card li a').forEach(function (element) {
+        element.addEventListener('click', function (e) {
+            trackFilterAppliedOnDashboard('Revenue', e.target.innerText);
+        });
+    });
+    document.querySelectorAll('.customers-card li a').forEach(function (element) {
+        element.addEventListener('click', function (e) {
+            trackFilterAppliedOnDashboard('Customers', e.target.innerText);
+        });
+    });
+
+    const trackFilterAppliedOnDashboard = (filter, value) => {
+        window.trackEvent('Filter applied on Dashboard', {filter, value});
+    };
     /**
      * Easy selector helper function
      */
